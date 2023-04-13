@@ -13,7 +13,7 @@ export function passengerDataValidations(passenger: PassengerSliceType, payment:
     if (!/^[A-Za-z][A-Za-z ]+$/.test(passenger.name)) {
         dispatch(changeNameErr("Passenger name is empty or invalid"));
     }
-    if (!/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(passenger.email)) {
+    if (!/^[a-zA-Z\d.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z\d-]+(?:\.[a-zA-Z\d-]+)*$/.test(passenger.email)) {
         dispatch(changeEmailErr("Passenger email is empty or invalid"));
     }
     if (!/^[A-Za-z][A-Za-z ]+$/.test(passenger.source)) {
