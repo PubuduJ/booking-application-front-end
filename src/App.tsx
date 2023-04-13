@@ -1,6 +1,13 @@
-import React from 'react';
+import React, {useState} from 'react';
+import {useAppDispatch, useAppSelector} from "./store/store";
 
 function App() {
+    const {passenger, payment, errorMsg} = useAppSelector((store) => {
+        return store;
+    });
+    const dispatch = useAppDispatch();
+    const [responseMessage, setResponseMessage] = useState<string>("");
+
     return (
         <>
             <>
