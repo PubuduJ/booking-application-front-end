@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {useAppDispatch, useAppSelector} from "./store/store";
 import {BookingType} from "./types/types";
+import {passengerDataValidations} from "./validations/validations";
 
 function App() {
     const {passenger, payment, errorMsg} = useAppSelector((store) => {
@@ -19,6 +20,7 @@ function App() {
             || !/^\d{4}-\d{2}-\d{2}$/.test(passenger.travelDate)
             || passenger.fare <= 10000 || passenger.fare >= 1000000
             || !payment.accountNo || !payment.cardType) {
+            passengerDataValidations(passenger, payment, dispatch);
             return;
         }
         const booking: BookingType = {passengerInfo: passenger, paymentInfo: payment};
