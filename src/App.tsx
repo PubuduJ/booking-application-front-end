@@ -2,6 +2,16 @@ import React, {useState} from 'react';
 import {useAppDispatch, useAppSelector} from "./store/store";
 import {BookingType} from "./types/types";
 import {passengerDataValidations} from "./validations/validations";
+import {postCall} from "./api/apiCalls";
+import {
+    changeDestination,
+    changeEmail, changeFare,
+    changeName,
+    changeSource, changeTravelDate,
+    resetPassenger
+} from "./features/passenger/passengerSlice";
+import {changeAccountNo, changeCardType, resetPayment} from "./features/payment/paymentSlice";
+import {resetErrors} from "./features/error/errorSlice";
 
 function App() {
     const {passenger, payment, errorMsg} = useAppSelector((store) => {
@@ -10,7 +20,7 @@ function App() {
     const dispatch = useAppDispatch();
     const [responseMessage, setResponseMessage] = useState<string>("");
 
-    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setResponseMessage("");
         if (!/^[A-Za-z][A-Za-z ]+$/.test(passenger.name)
@@ -24,7 +34,22 @@ function App() {
             return;
         }
         const booking: BookingType = {passengerInfo: passenger, paymentInfo: payment};
-        console.log(booking);
+        try {
+            await postCall(booking);
+            setResponseMessage("Booking successfully saved to the database");
+            dispatch(resetPassenger());
+            dispatch(resetPayment());
+            // @ts-ignore
+            document.getElementById("accountNo").selectedIndex = 0;
+            // @ts-ignore
+            document.getElementById("cardType").selectedIndex = 0;
+        } catch (err: any) {
+            if (err.response) {
+                setResponseMessage(err.response.data.message);
+            } else {
+                setResponseMessage(`Error: ${err.message}`);
+            }
+        }
     }
 
     return (
@@ -41,6 +66,8 @@ function App() {
                         <label htmlFor="name" className="form-label">Name</label>
                         <input onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             setResponseMessage("");
+                            dispatch(resetErrors());
+                            dispatch(changeName(event.target.value));
                         }
                         } type="text" className="form-control" id="name" value={passenger.name}/>
                         <div className="error-msg">{errorMsg.nameErr}</div>
@@ -49,6 +76,8 @@ function App() {
                         <label htmlFor="email" className="form-label">Email</label>
                         <input onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             setResponseMessage("");
+                            dispatch(resetErrors());
+                            dispatch(changeEmail(event.target.value));
                         }
                         } type="email" className="form-control" id="email" value={passenger.email}/>
                         <div className="error-msg">{errorMsg.emailErr}</div>
@@ -57,6 +86,8 @@ function App() {
                         <label htmlFor="source" className="form-label">Source</label>
                         <input onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             setResponseMessage("");
+                            dispatch(resetErrors());
+                            dispatch(changeSource(event.target.value));
                         }
                         } type="text" className="form-control" id="source" value={passenger.source}/>
                         <div className="error-msg">{errorMsg.sourceErr}</div>
@@ -65,6 +96,8 @@ function App() {
                         <label htmlFor="destination" className="form-label">Destination</label>
                         <input onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             setResponseMessage("");
+                            dispatch(resetErrors());
+                            dispatch(changeDestination(event.target.value));
                         }
                         } type="text" className="form-control" id="destination"
                                value={passenger.destination}/>
@@ -74,6 +107,8 @@ function App() {
                         <label htmlFor="travelDate" className="form-label">Travel Date</label>
                         <input onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             setResponseMessage("");
+                            dispatch(resetErrors());
+                            dispatch(changeTravelDate(event.target.value));
                         }
                         } type="date" className="form-control" id="travelDate"
                                value={passenger.travelDate}/>
@@ -83,6 +118,8 @@ function App() {
                         <label htmlFor="fare" className="form-label">Fare</label>
                         <input onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             setResponseMessage("");
+                            dispatch(resetErrors());
+                            dispatch(changeFare(event.target.value));
                         }
                         } type="number" min="0" className="form-control" id="fare" value={passenger.fare}/>
                         <div className="error-msg">{errorMsg.fareErr}</div>
@@ -93,6 +130,8 @@ function App() {
                         <label htmlFor="accountNo" className="form-label">Account No</label>
                         <select onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
                             setResponseMessage("");
+                            dispatch(resetErrors());
+                            dispatch(changeAccountNo(event.target.value));
                         }
                         } id="accountNo" className="form-select">
                             <option value={""}>select account no</option>
@@ -107,6 +146,8 @@ function App() {
                         <label htmlFor="cardType" className="form-label">Card Type</label>
                         <select onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
                             setResponseMessage("");
+                            dispatch(resetErrors());
+                            dispatch(changeCardType(event.target.value));
                         }
                         } id="cardType" className="form-select">
                             <option value={""}>select card type</option>
