@@ -30,7 +30,7 @@ function App() {
                         <div className="col-md-12">
                             <label htmlFor="destination" className="form-label">Destination</label>
                             <input type="text" className="form-control" id="destination"/>
-                            <div className="error-msg">Error Message}</div>
+                            <div className="error-msg">Error Message</div>
                         </div>
                         <div className="col-md-12">
                             <label htmlFor="travelDate" className="form-label">Travel Date</label>
@@ -39,7 +39,7 @@ function App() {
                         </div>
                         <div className="col-md-12">
                             <label htmlFor="fare" className="form-label">Fare</label>
-                            <input type="number" min="0" className="form-control" id="fare" value={passenger.fare}/>
+                            <input type="number" min="0" className="form-control" id="fare"/>
                             <div className="error-msg">Error Message</div>
                         </div>
                         <hr className="horizontal-rule"/>
